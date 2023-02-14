@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private final static Pattern pattern = Pattern.compile("[0-9]+");
+    private final static Pattern digitPattern = Pattern.compile("[0-9]+");
+    private final static Pattern arabicPattern = Pattern.compile("^[\\u0621-\\u064A]+$");
     @Autowired
     EmployeeDao employeeDao;
 
@@ -38,13 +39,16 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (employeeDto == null) {
                 throw new EmployeeException("Employee can't be null");
             }
-            if (employeeDto.getNationalId().length() < 14) {
+            if (employeeDto.getNationalId().length() != 14) {
                 throw new EmployeeException("National Id length should be 14");
             }
             if (!employeeDao.existsByNationalId(employeeDto.getNationalId())) {
                 throw new EmployeeException("National id already exists");
             }
-            if (!pattern.matcher(employeeDto.getNationalId()).matches()) {
+//            if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
+//                throw new EmployeeException("Employee name should be in arabic format only");
+//            }
+            if (!digitPattern.matcher(employeeDto.getNationalId()).matches()) {
                 throw new EmployeeException("National Id should be in digit format only");
             }
             if (!validateEmployeeAge(employeeDto)) {
@@ -96,13 +100,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeDto == null) {
             throw new EmployeeException("Employee can't be null");
         }
-        if(employeeDto.getNationalId().length() < 14){
+        if(employeeDto.getNationalId().length() != 14 ){
             throw new EmployeeException("National Id length should be 14");
         }
         if (!employeeDao.existsByNationalId(employeeDto.getNationalId())) {
             throw new EmployeeException("National id already exists");
         }
-        if(!pattern.matcher(employeeDto.getNationalId()).matches()){
+//        if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
+//            throw new EmployeeException("Employee name should be in arabic format only");
+//        }
+        if(!digitPattern.matcher(employeeDto.getNationalId()).matches()){
             throw new EmployeeException("National Id should be in digit format only");
         }
         if (!validateEmployeeAge(employeeDto)) {
@@ -164,7 +171,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employeeDao.existsByNationalId(employeeDto.getNationalId())) {
             throw new EmployeeException("National id already exists");
         }
-        if (!pattern.matcher(employeeDto.getNationalId()).matches()) {
+        if (!digitPattern.matcher(employeeDto.getNationalId()).matches()) {
             throw new EmployeeException("National Id should be in digit format only");
         }
         if (!validateEmployeeAge(employeeDto)) {
