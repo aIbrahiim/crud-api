@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final static Pattern digitPattern = Pattern.compile("[0-9]+");
-    private final static Pattern arabicPattern = Pattern.compile("^[\\u0621-\\u064A]+$");
+    private final static Pattern arabicPattern = Pattern.compile("[^a-z^A-Z^0-9^*@$#]+$");
     @Autowired
     EmployeeDao employeeDao;
 
@@ -45,9 +45,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (!employeeDao.existsByNationalId(employeeDto.getNationalId())) {
                 throw new EmployeeException("National id already exists");
             }
-//            if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
-//                throw new EmployeeException("Employee name should be in arabic format only");
-//            }
+            if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
+                throw new EmployeeException("Employee name should be in arabic format only");
+            }
             if (!digitPattern.matcher(employeeDto.getNationalId()).matches()) {
                 throw new EmployeeException("National Id should be in digit format only");
             }
@@ -106,9 +106,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employeeDao.existsByNationalId(employeeDto.getNationalId())) {
             throw new EmployeeException("National id already exists");
         }
-//        if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
-//            throw new EmployeeException("Employee name should be in arabic format only");
-//        }
+        if (!arabicPattern.matcher(employeeDto.getName()).matches()) {
+            throw new EmployeeException("Employee name should be in arabic format only");
+        }
         if(!digitPattern.matcher(employeeDto.getNationalId()).matches()){
             throw new EmployeeException("National Id should be in digit format only");
         }
@@ -178,5 +178,4 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeException("Age is not valid");
         }
     }
-
 }
